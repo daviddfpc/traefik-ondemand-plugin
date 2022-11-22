@@ -1,4 +1,4 @@
-displayName: Containers On Demand
+displayName: Containers On Demand 2
 type: middleware
 
 import: github.com/daviddfpc/traefik-ondemand-plugin.git
