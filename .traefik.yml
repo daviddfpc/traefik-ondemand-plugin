@@ -1,7 +1,7 @@
 displayName: Containers On Demand
 type: middleware
 
-import: github.com/acouvreur/traefik-ondemand-plugin
+import: github.com/daviddfpc/traefik-ondemand-plugin.git
 
 summary: 'Start your containers/services on the first request they recieve, and shut them down after a specified duration after the last request they received. Kubernetes, Docker classic and docker swarm compatible.'
 
