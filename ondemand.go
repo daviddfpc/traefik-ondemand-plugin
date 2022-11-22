@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/acouvreur/traefik-ondemand-plugin/pkg/strategy"
+	"github.com/daviddfpc/traefik-ondemand-plugin.git"
 )
 
 // Config the plugin configuration
