@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/acouvreur/traefik-ondemand-plugin/pkg/pages"
+	"github.com/daviddfpc/traefik-ondemand-plugin.git/pkg/pages"
 )
 
 type DynamicStrategy struct {
