@@ -8,6 +8,44 @@ import (
 	"time"
 )
 
+type CustomResponseWriter struct {
+	body       []byte
+	statusCode int
+	header     http.Header
+}
+
+func NewCustomResponseWriter() *CustomResponseWriter {
+	return &CustomResponseWriter{
+		header: http.Header{},
+	}
+}
+
+func (w *CustomResponseWriter) Header() http.Header {
+	return w.header
+}
+
+func (w *CustomResponseWriter) StatusCode() int {
+	return w.statusCode
+}
+
+func (w *CustomResponseWriter) Write(b []byte) (int, error) {
+	w.body = b
+	// implement it as per your requirement 
+	return 0, nil
+}
+
+func (w *CustomResponseWriter) WriteHeader(statusCode int) {
+	w.statusCode = statusCode
+}
+
+func (w *CustomResponseWriter) PassResponse(rw http.ResponseWriter) (int, error) {
+	for (key, values) := range w.header) {
+		rw.Header()[key] := values
+	}
+	rw.WriteHeader(w.statusCode)
+	return rw.Write(w.body)
+}
+
 type BlockingStrategy struct {
 	Requests           []string
 	Name               string
@@ -46,7 +84,14 @@ func (e *BlockingStrategy) ServeHTTP(rw http.ResponseWriter, req *http.Request) 
 		}
 		if notReadyCount == 0 {
 			// Services all started forward request
-			e.Next.ServeHTTP(rw, req)
+			w := NewCustomResponseWriter()
+			e.Next.ServeHTTP(w, req)
+			while (w.StatusCode() == 502 && time.Since(start) < e.BlockDelay) {
+				time.Sleep(e.BlockCheckInterval)
+				w := NewCustomResponseWriter()
+				e.Next.ServeHTTP(w, req)
+			}
+			e.PassResponse(rw)
 			return
 		}
 
